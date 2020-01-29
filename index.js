@@ -54,13 +54,11 @@ function KV (db, mapFn, opts) {
             var pending = ids.length + 1
             for (var i = 0; i < ids.length; i++) {
               var id = ids[i]
-              // XXX: this assumes KEY@SEQ format!!! userspace might not do
-              // this!
-              // TODO: expose this on kappa-core somehow
-              // TODO: in fact, can we just expose the 'version' string /w @
-              // explicitly?
-              var feed = self.source.feed(id.split('@')[0])
-              var seq = Number(id.split('@')[1])
+
+              var [ key, sequence ] = id.split('@')
+              var feed = opts.getFeed(key)
+              var seq = Number(sequence)
+
               ;(function (feed, seq) {
                 feed.get(seq, function (err, value) {
                   if (err) return done(err)
@@ -93,9 +91,12 @@ function KV (db, mapFn, opts) {
           var pending = 1
           var res = entry.value.split(',').forEach(function (value) {
             pending++
-            var feed = flow.source.feed(value.split('@')[0])
+
+            var [ key, sequence ] = value.split('@')
+            var feed = opts.getFeed(key)
+
             if (feed) {
-              var seq = Number(value.split('@')[1])
+              var seq = Number(sequence)
               feed.get(seq, function (err, val) {
                 if (!err) {
                   self.push({
