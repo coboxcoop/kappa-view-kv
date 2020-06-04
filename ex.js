@@ -1,4 +1,4 @@
-var memdb = require('memdb')
+var memdb = require('level-mem')
 var kappa = require('kappa-core')
 var kv = require('.')
 

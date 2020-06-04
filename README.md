@@ -15,7 +15,7 @@ Let's build a key-value view that maps the 'id' field to the latest values of
 that id.
 
 ```js
-var memdb = require('memdb')
+var memdb = require('level-mem')
 var kappa = require('kappa-core')
 var kv = require('.')
 
